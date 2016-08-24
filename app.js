@@ -3,22 +3,36 @@ const API_KEY = "93e210905adedce9"
 var app = {
   cities: [],
 
-  getWeather: function(e){
-    e.preventDefault();
-    location = $(this).children('input').val()
-    $.ajax({
-      url: `http://api.wunderground.com/api/${API_KEY}/conditions/q/Canada/${location}.json`,
-      method: 'GET',
-      dataType: 'json',
-      success: function(data){
-        console.log("got something")
-      }
+  render: function(){
+    $('#city').html("")
+    app.cities.forEach(function(city){
+      var $weatherCard = app.weatherCard(city)
+      $weatherCard.appendTo($('#cities-list'))
     })
   },
 
-  render: function(){
+  weatherCard: function(city){
+
+  }
+
+  logResults: function(data){
     $('#cities-list').html("")
+    data.RESULTS.forEach(function(city){
+      cityName = $('<h3>').addClass('city').text(city.name)
+      $('#cities-list').append(cityName)
+    })
   },
+
+  // getWeather: function(e){
+  //   e.preventDefault();
+  //   location = $('#search-input').val()
+  //   $.ajax({
+  //     url: `http://api.wunderground.com/api/${API_KEY}/geolookup/conditions/q/Canada/${location}.jsonp?callback=app.logResults`,
+  //     method: 'GET',
+  //     dataType: 'jsonp',
+  //     success: app.logResults
+  //   })
+  // },
 
   autoComplete: function(){
     text = $(this).val()
@@ -26,19 +40,13 @@ var app = {
       url: `http://autocomplete.wunderground.com/aq?query=${text}&cb=app.logResults`,
       method: 'GET',
       dataType: 'jsonp',
-      success: function(data){
-        data.forEach(function(city){
-          app.cities = []
-          app.cites.push(city)
-        })
-        app.render()
-      }
+      success: app.logResults
     })
   },
 
   init: function(){
     $(document).on('keyup', '#search-input', app.autoComplete)
-    $(document).on('submit', '#search-location', app.getWeather)
+    $(document).on('click', '.city', app.render)
   }
 }
 
