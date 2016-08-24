@@ -5,14 +5,15 @@
     <title>WeatherApp</title>
     <script   src="https://code.jquery.com/jquery-3.1.0.js"   integrity="sha256-slogkvB1K3VOkzAI8QITxV3VzpOnkeNVsKvtkYLMjfk="   crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/lodash/4.15.0/lodash.min.js"></script>
-    <script type="text/javascript" src="app.js"></script>
+    <script src="app.js"></script>
   </head>
   <body>
-    <div id="weatherapp">
-      <form class="" action="index.html" method="get">
-        <input type="text" name="search" placeholder="">
-        <button type="submit" name="button">Get Weather!</button>
+    <div id="weather-app">
+      <form id="search-form" action="index.html" method="get">
+        <input type="text" id='search-input' name="location" placeholder="Location">
+        <button type="submit" name="submit">Get Weather!</button>
       </form>
+      <div id="cities-list"></div>
     </div>
   </body>
 </html>
