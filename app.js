@@ -3,17 +3,13 @@ const API_KEY = "93e210905adedce9"
 var app = {
   cities: [],
 
-  render: function(){
-    $('#city').html("")
-    app.cities.forEach(function(city){
-      var $weatherCard = app.weatherCard(city)
-      $weatherCard.appendTo($('#cities-list'))
-    })
+  render: function(jsonData){
+    $('#city').html("").append([
+      $('<h2>').addClass('city-name').text(jsonData.location.city),
+      $('<h3>').addClass('country-name').text(jsonData.location.country_name),
+      $('<p>').addClass('temperture').text("Currently it's " + jsonData.current_observation.temp_c)
+    ])
   },
-
-  weatherCard: function(city){
-
-  }
 
   logResults: function(data){
     $('#cities-list').html("")
@@ -23,19 +19,29 @@ var app = {
     })
   },
 
-  // getWeather: function(e){
-  //   e.preventDefault();
-  //   location = $('#search-input').val()
-  //   $.ajax({
-  //     url: `http://api.wunderground.com/api/${API_KEY}/geolookup/conditions/q/Canada/${location}.jsonp?callback=app.logResults`,
-  //     method: 'GET',
-  //     dataType: 'jsonp',
-  //     success: app.logResults
-  //   })
-  // },
+  displayURL: function(text){
+    textArray = text.split(", ")
+    if (text.match(/,\s/g).length < 1 || text.match(/,\s/g).length == null ){
+      return `http://api.wunderground.com/api/${API_KEY}/geolookup/conditions/q/${text}.json`
+    }else{
+      return `http://api.wunderground.com/api/${API_KEY}/geolookup/conditions/q/${textArray[1]}/${textArray[0]}.json`
+    }
+  },
+
+  getWeather: function(){
+    var url = app.displayURL($(this).text())
+    $.ajax({
+      url: url,
+      method: 'GET',
+      dataType: 'json',
+      success: function(data){
+        app.render(data)
+      }
+    })
+  },
 
   autoComplete: function(){
-    text = $(this).val()
+    var text = $(this).val()
     $.ajax({
       url: `http://autocomplete.wunderground.com/aq?query=${text}&cb=app.logResults`,
       method: 'GET',
@@ -46,7 +52,7 @@ var app = {
 
   init: function(){
     $(document).on('keyup', '#search-input', app.autoComplete)
-    $(document).on('click', '.city', app.render)
+    $(document).on('click', '.city', app.getWeather)
   }
 }
 
